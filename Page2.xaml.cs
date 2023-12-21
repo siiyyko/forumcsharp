@@ -15,10 +15,12 @@ namespace forumcsharp
     public partial class Page2 : Page
     {
         string login;
-        private string IP = "127.0.0.1";
+        //private string IP = "127.0.0.1";
+        private string IP = "192.168.166.220";
         private int Port = 27015;
+        private string Login;
 
-        public Page2()
+        public Page2(string _Login)
         {
             InitializeComponent();
             //Show();
@@ -30,7 +32,8 @@ namespace forumcsharp
 
             Thread listenerThread = new Thread(listenAndPrintMessages);
             listenerThread.Start();
-
+            Login = _Login;
+            UsernameTextBlock.Text = $"Username: {Login}";
         }
 
         private TcpClient client;
@@ -74,8 +77,12 @@ namespace forumcsharp
         {
             string messageToSend = ForumTextBox.Text;
             if (messageToSend.Length > 0)
+            {
+                messageToSend = Login + ": " + messageToSend;
                 if (!sendMessage(messageToSend))
                     MessageBox.Show("Message has not been sent!");
+            }
+
 
             ForumTextBox.Text = "";
         }
@@ -112,9 +119,5 @@ namespace forumcsharp
             }
         }
 
-        private void Navigation(object sender, NavigationEventArgs e)
-        {
-            login = (string)e.ExtraData;
-        }
     }
 }
